@@ -1,0 +1,7 @@
+
+Flask
+mysql-connector-python
+playwright
+reportlab
+python-dotenv
+gunicorn

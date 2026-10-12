@@ -1,0 +1,118 @@
+
+{% extends "base.html" %}
+
+{% block title %}Home | AccessiCheck{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-badge">
+        <span class="status-dot"></span>
+        Website Accessibility Auditor
+    </div>
+
+    <h1>Make Your Website <span>Accessible to Everyone</span></h1>
+
+    <p class="hero-description">
+        Scan your website for accessibility issues, review detected problems,
+        check your accessibility score and download a PDF report.
+    </p>
+
+    <div class="hero-features">
+        <div class="feature-item">
+            <span class="feature-icon">✓</span>
+            WCAG Checks
+        </div>
+        <div class="feature-item">
+            <span class="feature-icon">↗</span>
+            Detailed Results
+        </div>
+        <div class="feature-item">
+            <span class="feature-icon">↓</span>
+            PDF Reports
+        </div>
+    </div>
+</section>
+
+<section class="scanner-section">
+    <div class="scanner-card">
+        <div class="scanner-heading">
+            <div class="scanner-icon" aria-hidden="true">⌕</div>
+            <div>
+                <h2>Scan Your Website</h2>
+                <p>Enter the URL of a website you want to audit.</p>
+            </div>
+        </div>
+
+        <form id="scan-form" method="POST" action="{{ url_for('index') }}">
+            <label for="url">Website URL</label>
+
+            <div class="url-input-wrapper">
+                <span class="url-icon" aria-hidden="true">🌐</span>
+                <input
+                    type="url"
+                    id="url"
+                    name="url"
+                    placeholder="https://example.com"
+                    required
+                    maxlength="2048"
+                    autocomplete="url"
+                    aria-describedby="url-help"
+                >
+            </div>
+
+            <p id="url-help" class="input-help">
+                Include https:// or http:// in the website address.
+            </p>
+
+            <button type="submit" class="primary-button" id="scan-button">
+                <span id="scan-button-text">Start Accessibility Scan</span>
+                <span aria-hidden="true"> →</span>
+            </button>
+        </form>
+
+        <div id="scan-loading" class="scan-loading" hidden role="status" aria-live="polite">
+            <div class="loading-spinner" aria-hidden="true"></div>
+            <div>
+                <strong>Scanning website...</strong>
+                <p>This may take a little time. Please wait.</p>
+            </div>
+        </div>
+
+        <div class="privacy-note">
+            <span aria-hidden="true">ⓘ</span>
+            Automated checks can identify many common issues, but they do not
+            replace manual accessibility testing.
+        </div>
+    </div>
+</section>
+
+<section class="info-section">
+    <div class="section-heading">
+        <span class="section-label">HOW IT WORKS</span>
+        <h2>Three Simple Steps</h2>
+        <p>Understand and improve your website accessibility.</p>
+    </div>
+
+    <div class="info-grid">
+        <article class="info-card">
+            <div class="info-number">01</div>
+            <h3>Enter Website URL</h3>
+            <p>Provide the address of the website you want to check.</p>
+        </article>
+
+        <article class="info-card">
+            <div class="info-number">02</div>
+            <h3>Analyze Accessibility</h3>
+            <p>The scanner checks for common accessibility violations using axe-core.</p>
+        </article>
+
+        <article class="info-card">
+            <div class="info-number">03</div>
+            <h3>View Your Report</h3>
+            <p>Review issue details, see the estimated score and download a PDF report.</p>
+        </article>
+    </div>
+</section>
+
+{% endblock %}

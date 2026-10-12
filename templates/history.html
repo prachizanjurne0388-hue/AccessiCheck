@@ -1,0 +1,94 @@
+
+{% extends "base.html" %}
+
+{% block title %}Scan History | AccessiCheck{% endblock %}
+
+{% block content %}
+
+<section class="history-header">
+    <span class="section-label">YOUR SCANS</span>
+    <h1>Scan History</h1>
+    <p>View your previous website accessibility scans and reports.</p>
+</section>
+
+<section class="history-section">
+    <div class="history-toolbar">
+        <div>
+            <h2>Previous Scans</h2>
+            <p class="muted-text">
+                Total scans: <strong>{{ scans|length }}</strong>
+            </p>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="primary-button">
+            + New Scan
+        </a>
+    </div>
+
+    {% if scans %}
+        <div class="table-wrapper">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Website</th>
+                        <th scope="col">Score</th>
+                        <th scope="col">Total Issues</th>
+                        <th scope="col">Scan Date</th>
+                        <th scope="col">Report</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for scan in scans %}
+                        <tr>
+                            <td>
+                                <a href="{{ scan.url }}"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="website-link">
+                                    {{ scan.url }}
+                                </a>
+                            </td>
+
+                            <td>
+                                <span class="history-score
+                                    {% if scan.score >= 80 %}score-text-good
+                                    {% elif scan.score >= 50 %}score-text-medium
+                                    {% else %}score-text-low{% endif %}">
+                                    {{ scan.score }}/100
+                                </span>
+                            </td>
+
+                            <td>{{ scan.total_issues }}</td>
+
+                            <td>
+                                {{ scan.scanned_at.strftime('%d %b %Y, %I:%M %p')
+                                   if scan.scanned_at.strftime is defined
+                                   else scan.scanned_at }}
+                            </td>
+
+                            <td>
+                                <a href="{{ url_for('saved_report', scan_id=scan.id) }}"
+                                   class="view-report-link">
+                                    View Report →
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon" aria-hidden="true">⌕</div>
+            <h3>No scans yet</h3>
+            <p>Your previous accessibility scans will appear here.</p>
+
+            <a href="{{ url_for('index') }}" class="primary-button">
+                Start Your First Scan
+            </a>
+        </div>
+    {% endif %}
+</section>
+
+{% endblock %}

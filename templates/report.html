@@ -1,0 +1,173 @@
+
+{% extends "base.html" %}
+
+{% block title %}Scan Report | AccessiCheck{% endblock %}
+
+{% block content %}
+
+<section class="report-header">
+    <a href="{{ url_for('index') }}" class="back-link">← Back to Scanner</a>
+
+    <div class="report-title-row">
+        <div>
+            <span class="section-label">ACCESSIBILITY AUDIT</span>
+            <h1>Scan Report</h1>
+            <p class="report-url">{{ results.url }}</p>
+        </div>
+
+        <a href="{{ url_for('download_report', scan_id=scan_id) }}"
+           class="secondary-button">
+            Download PDF ↓
+        </a>
+    </div>
+</section>
+
+<section class="score-section">
+    <div class="score-card">
+        <div class="score-circle
+            {% if results.score >= 80 %}score-good
+            {% elif results.score >= 50 %}score-medium
+            {% else %}score-low{% endif %}">
+            <div class="score-inner">
+                <span class="score-number">{{ results.score }}</span>
+                <span class="score-total">out of 100</span>
+            </div>
+        </div>
+
+        <div class="score-description">
+            <h2>Accessibility Score</h2>
+
+            {% if results.score >= 80 %}
+                <p class="score-message">Relatively few weighted issues detected.</p>
+            {% elif results.score >= 50 %}
+                <p class="score-message">Several accessibility issues need attention.</p>
+            {% else %}
+                <p class="score-message">Many weighted accessibility issues were detected.</p>
+            {% endif %}
+
+            <p class="muted-text">
+                This score is an estimate based on detected issue severity,
+                not an official WCAG compliance rating.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="metrics-grid" aria-label="Issue summary">
+    <article class="metric-card">
+        <span class="metric-label">Total Issues</span>
+        <strong class="metric-value">{{ results.total_issues }}</strong>
+        <span class="metric-caption">Detected instances</span>
+    </article>
+
+    <article class="metric-card metric-critical">
+        <span class="metric-label">Critical</span>
+        <strong class="metric-value">{{ results.critical_issues }}</strong>
+        <span class="metric-caption">Highest severity</span>
+    </article>
+
+    <article class="metric-card metric-serious">
+        <span class="metric-label">Serious</span>
+        <strong class="metric-value">{{ results.serious_issues }}</strong>
+        <span class="metric-caption">High severity</span>
+    </article>
+
+    <article class="metric-card metric-moderate">
+        <span class="metric-label">Moderate</span>
+        <strong class="metric-value">{{ results.moderate_issues }}</strong>
+        <span class="metric-caption">Medium severity</span>
+    </article>
+
+    <article class="metric-card metric-minor">
+        <span class="metric-label">Minor</span>
+        <strong class="metric-value">{{ results.minor_issues }}</strong>
+        <span class="metric-caption">Lower severity</span>
+    </article>
+</section>
+
+<section class="issues-section">
+    <div class="section-heading issues-heading">
+        <span class="section-label">SCAN FINDINGS</span>
+        <h2>Accessibility Issues</h2>
+        <p>Review each finding and follow the guidance to investigate it.</p>
+    </div>
+
+    {% if results.violations %}
+        <div class="issues-list">
+            {% for issue in results.violations %}
+                <article class="issue-card">
+                    <div class="issue-card-header">
+                        <div>
+                            <h3>{{ issue.help }}</h3>
+                            <span class="issue-rule">{{ issue.id }}</span>
+                        </div>
+
+                        <span class="severity-badge severity-{{ issue.impact }}">
+                            {{ issue.impact }}
+                        </span>
+                    </div>
+
+                    <p class="issue-description">{{ issue.description }}</p>
+
+                    <p class="affected-count">
+                        Affected elements: {{ issue.count }}
+                    </p>
+
+                    {% if issue.helpUrl %}
+                        <a href="{{ issue.helpUrl }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="issue-help-link">
+                            Learn how to fix this issue ↗
+                        </a>
+                    {% endif %}
+
+                    {% if issue.elements %}
+                        <details class="element-details">
+                            <summary>View affected elements</summary>
+
+                            {% for element in issue.elements %}
+                                <div class="element-item">
+                                    <strong>Element:</strong>
+                                    <code>{{ element.target | join(', ') }}</code>
+
+                                    {% if element.summary %}
+                                        <p>{{ element.summary }}</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+
+                            {% if issue.count > issue.elements|length %}
+                                <p class="muted-text">
+                                    Showing the first {{ issue.elements|length }}
+                                    affected elements.
+                                </p>
+                            {% endif %}
+                        </details>
+                    {% endif %}
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon" aria-hidden="true">✓</div>
+            <h3>No violations detected by this scan</h3>
+            <p>
+                This does not guarantee that the website is fully accessible.
+                Keyboard, screen-reader and manual checks are still recommended.
+            </p>
+        </div>
+    {% endif %}
+</section>
+
+<section class="report-actions">
+    <a href="{{ url_for('index') }}" class="primary-button">
+        Scan Another Website →
+    </a>
+
+    <a href="{{ url_for('history') }}" class="secondary-button">
+        View Scan History
+    </a>
+</section>
+
+{% endblock %}
