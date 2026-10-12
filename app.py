@@ -12,18 +12,23 @@ from scanner import scan_website
 load_dotenv()
 
 app = Flask(__name__)
+
 app.secret_key = os.getenv("SECRET_KEY", "accessicheck-local-key")
 
 
 def get_db_connection():
-    return mysql.connector.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", ""),
-        database=os.getenv("DB_NAME", "accessicheck"),
-        port=int(os.getenv("DB_PORT", "3306"))
-    )
+    connection_config = {
+        "host": os.getenv("DB_HOST", "localhost"),
+        "user": os.getenv("DB_USER", "root"),
+        "password": os.getenv("DB_PASSWORD", ""),
+        "database": os.getenv("DB_NAME", "accessicheck"),
+        "port": int(os.getenv("DB_PORT", "3306")),
+    }
 
+    if os.getenv("DB_HOST", "localhost") != "localhost":
+        connection_config["ssl_disabled"] = False
+
+    return mysql.connector.connect(**connection_config)
 
 def init_db():
     connection = get_db_connection()
