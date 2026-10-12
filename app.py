@@ -16,17 +16,22 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "accessicheck-local-key")
 
 
+
 def get_db_connection():
+    db_host = os.getenv("DB_HOST", "localhost")
+
     connection_config = {
-        "host": os.getenv("DB_HOST", "localhost"),
+        "host": db_host,
         "user": os.getenv("DB_USER", "root"),
         "password": os.getenv("DB_PASSWORD", ""),
         "database": os.getenv("DB_NAME", "accessicheck"),
         "port": int(os.getenv("DB_PORT", "3306")),
     }
 
-    if os.getenv("DB_HOST", "localhost") != "localhost":
-        connection_config["ssl_disabled"] = False
+    if db_host != "localhost":
+        connection_config["ssl_ca"] = os.getenv("DB_SSL_CA", "ca.pem")
+        connection_config["ssl_verify_cert"] = True
+        connection_config["ssl_verify_identity"] = True
 
     return mysql.connector.connect(**connection_config)
 
