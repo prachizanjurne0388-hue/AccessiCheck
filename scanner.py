@@ -4,8 +4,10 @@ from playwright.sync_api import sync_playwright
 
 def scan_website(url):
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True)
-
+        browser = playwright.chromium.launch(
+        headless=True,
+        channel="chromium"
+        )
         page = browser.new_page()
         page.set_default_timeout(20000)
 
