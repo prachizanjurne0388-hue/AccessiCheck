@@ -8,7 +8,7 @@
     --background: #f7f8fc;
     --surface: #ffffff;
     --text: #172033;
-    --muted: #697386;
+    --muted: #4b5563;
     --border: #e5e7ef;
     --success: #15803d;
     --danger: #dc2626;
@@ -981,7 +981,7 @@ summary:focus-visible {
 
 .footer-note {
     margin-top: 5px;
-    color: #858b9a !important;
+    color: #596174 !important;
     font-size: 10px !important;
 }
 
